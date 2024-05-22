@@ -5,20 +5,26 @@ using System.IO;
 
 class Vegetable
 {
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Color { get; set; }
+    public Vegetable(int number, string name, string color) 
+    { 
+        Name = name;
+        Color = color;
+        Number = number;
+    }
+    public int Number { get;private set; }
+    public string Name { get;private set; }
+    public string Color { get;private set; }
 }
 
 class VegetableDatabase
 {
     private List<Vegetable> vegetables = new List<Vegetable>();
-    private string filePath = "vegetables.txt";
+    private string filePath = "Овощи.txt";
 
     public void AddVegetable(string name, string color)
     {
-        int id = vegetables.Count + 1;
-        vegetables.Add(new Vegetable { Id = id, Name = name, Color = color });
+        int number = vegetables.Count + 1;
+        vegetables.Add(new Vegetable( number,name, color ));
         SaveData();
     }
 
@@ -27,7 +33,7 @@ class VegetableDatabase
         Console.WriteLine("Список овощей:");
         foreach (var vegetable in vegetables)
         {
-            Console.WriteLine($"ID: {vegetable.Id}, Название: {vegetable.Name}, Цвет: {vegetable.Color}");
+            Console.WriteLine($"Номер: {vegetable.Number}, Название: {vegetable.Name}, Цвет: {vegetable.Color}");
         }
     }
 
@@ -37,7 +43,7 @@ class VegetableDatabase
         {
             foreach (var vegetable in vegetables)
             {
-                writer.WriteLine($"{vegetable.Id},{vegetable.Name},{vegetable.Color}");
+                writer.WriteLine($"{vegetable.Number},{vegetable.Name},{vegetable.Color}");
             }
         }
     }
@@ -52,10 +58,10 @@ class VegetableDatabase
                 string[] parts = line.Split(',');
                 if (parts.Length == 3)
                 {
-                    int id = int.Parse(parts[0]);
+                    int number = int.Parse(parts[0]);
                     string name = parts[1];
                     string color = parts[2];
-                    vegetables.Add(new Vegetable { Id = id, Name = name, Color = color });
+                    vegetables.Add(new Vegetable ( number, name, color));
                 }
             }
         }
@@ -93,7 +99,7 @@ class Program
                 case "3":
                     return;
                 default:
-                    Console.WriteLine("Некорректный выбор. Попробуйте снова.");
+                    Console.WriteLine("Некорректный выбор.");
                     break;
             }
         }

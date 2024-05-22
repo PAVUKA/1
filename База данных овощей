@@ -1,0 +1,103 @@
+Для создания программы базы данных овощей на C# с сохранением результатов в текстовый файл при каждом запуске программы, предлагаю следующий код:
+
+csharp
+using System;
+using System.Collections.Generic;
+using System.IO;
+
+class Vegetable
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Color { get; set; }
+}
+
+class VegetableDatabase
+{
+    private List<Vegetable> vegetables = new List<Vegetable>();
+    private string filePath = "vegetables.txt";
+
+    public void AddVegetable(string name, string color)
+    {
+        int id = vegetables.Count + 1;
+        vegetables.Add(new Vegetable { Id = id, Name = name, Color = color });
+        SaveData();
+    }
+
+    public void ShowVegetables()
+    {
+        Console.WriteLine("Список овощей:");
+        foreach (var vegetable in vegetables)
+        {
+            Console.WriteLine($"ID: {vegetable.Id}, Название: {vegetable.Name}, Цвет: {vegetable.Color}");
+        }
+    }
+
+    private void SaveData()
+    {
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            foreach (var vegetable in vegetables)
+            {
+                writer.WriteLine($"{vegetable.Id},{vegetable.Name},{vegetable.Color}");
+            }
+        }
+    }
+
+    public void LoadData()
+    {
+        if (File.Exists(filePath))
+        {
+            string[] lines = File.ReadAllLines(filePath);
+            foreach (string line in lines)
+            {
+                string[] parts = line.Split(',');
+                if (parts.Length == 3)
+                {
+                    int id = int.Parse(parts[0]);
+                    string name = parts[1];
+                    string color = parts[2];
+                    vegetables.Add(new Vegetable { Id = id, Name = name, Color = color });
+                }
+            }
+        }
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        VegetableDatabase database = new VegetableDatabase();
+        database.LoadData();
+
+        Console.WriteLine("Программа базы данных овощей");
+        while (true)
+        {
+            Console.WriteLine("Выберите действие:");
+            Console.WriteLine("1. Добавить овощ");
+            Console.WriteLine("2. Просмотреть список овощей");
+            Console.WriteLine("3. Выйти");
+
+            string choice = Console.ReadLine();
+            switch (choice)
+            {
+                case "1":
+                    Console.Write("Введите название овоща: ");
+                    string name = Console.ReadLine();
+                    Console.Write("Введите цвет овоща: ");
+                    string color = Console.ReadLine();
+                    database.AddVegetable(name, color);
+                    break;
+                case "2":
+                    database.ShowVegetables();
+                    break;
+                case "3":
+                    return;
+                default:
+                    Console.WriteLine("Некорректный выбор. Попробуйте снова.");
+                    break;
+            }
+        }
+    }
+}
